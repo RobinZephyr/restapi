@@ -39,10 +39,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = __importDefault(require("express")); // Import express as a function
+var express_1 = __importDefault(require("express"));
 var data_source_1 = require("./data-source");
 var userRouter_1 = __importDefault(require("./routes/userRouter"));
 var cors_1 = __importDefault(require("cors"));
+var logger_1 = require("./middleware/logger");
 data_source_1.AppDataSource.initialize()
     .then(function () { return __awaiter(void 0, void 0, void 0, function () {
     var app;
@@ -51,6 +52,8 @@ data_source_1.AppDataSource.initialize()
         app.use(express_1.default.json());
         app.use(express_1.default.urlencoded({ extended: true }));
         app.use((0, cors_1.default)());
+        // Attach the logger middleware to the userRouter
+        userRouter_1.default.use(logger_1.logger);
         app.use("/public", userRouter_1.default);
         app.listen(8000);
         console.log("Express server has started on port 8000. Open http://localhost:8000/users to see results");
